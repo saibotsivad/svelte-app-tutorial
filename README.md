@@ -1,10 +1,10 @@
---
+<!--
 title: Building an application with Svelte
 description: A tutorial showing how to use Svelte to build an interactive application.
 pubdate: 2017-03-16
 author: Tobias Davis
 authorURL: http://saibotsivad.com
---
+-->
 
 # Building an application with Svelte
 
