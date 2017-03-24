@@ -3,10 +3,12 @@
   "version": "0.0.1",
   "description": "Learn how to build a web app using Svelte.",
   "scripts": {
-    "start": "http-server -p 8001 -c-1",
+    "start": "http-server -p 8001 -c-1 section",
     "watch": "",
     "build": "npm-run-all --parallel build:*",
-    "build:0": "./build.sh section/0-intro"
+    "build:0": "./build.sh section/0-intro",
+    "build:1": "./build.sh section/1-child",
+    "build:2": "./build.sh section/2-interact"
   },
   "author": "saibotsivad",
   "license": "VOL",

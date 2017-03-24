@@ -91,7 +91,7 @@ To use the component, create an `index.html` file that looks like this:
 		})
 		setTimeout(function() {
 			app.set({ name: 'everyone' })
-		}, 5000)
+		}, 3000)
 	</script>
 </body>
 </html>
@@ -129,8 +129,10 @@ We want to spice up the list elements, so let's try something like this:
 ```html
 <li>
 	<h1>🐐 Goat</h1>
-	(<a href="mailto:goat@animals.com">email</a>,
-	<a href="https://twitter.com/EverythingGoats">twitter</a>)
+	&middot;
+	<a href="mailto:goat@animals.com">email</a>
+	&middot;
+	<a href="https://twitter.com/EverythingGoats">twitter</a>
 </li>
 ```
 
@@ -139,28 +141,33 @@ Let's write that as a Svelte component:
 ```html
 <!-- ListEntry.html -->
 <li>
-	<h1>{{emoji}} {{name}}</h1>
-	(<a href="mailto:{{email}}">email</a>,
-	<a href="https://twitter.com/{{twitter}}">twitter</a>)
+	<h1>{{entry.emoji}} {{entry.name}}</h1>
+	{{#if entry.email}}
+		&middot;
+		<a href="mailto:{{entry.email}}">email</a>
+	{{/if}}
+	{{#if entry.twitter}}
+		&middot;
+		<a href="https://twitter.com/{{entry.twitter}}">twitter</a>
+	{{/if}}
 </li>
 ```
 
-This component doesn't have any state, it just takes the properties
-it's given and displays them. These are the best kind of components,
-because they are the easiest to reason about.
+This component doesn't have any internal "state", it just takes the
+properties it's given and displays them. These are the best kind of
+components, because they are the easiest to reason about.
 
-Let's make the parent component, to see how using child components works:
+The `#if` and `/if` properties are Svelte template syntax markers for
+conditionally displaying the content between the curly braces if the
+referenced property (in this case `entry.email` or `entry.twitter`) exists.
+
+Let's make the parent component, to see how we will use child components:
 
 ```html
 <!-- List.html -->
 <ul>
 	{{#each animals as animal}}
-	<ListEntry
-		name="{{animal.name}}"
-		emoji="{{animal.emoji}}"
-		email="{{animal.email}}"
-		twitter="{{animal.twitter}}"
-		/>
+		<ListEntry entry="{{animal}}" />
 	{{/each}}
 </ul>
 
@@ -175,11 +182,28 @@ export default {
 </script>
 ```
 
-For component code, Svelte has you specify a `script` element, in which
-you can specify things like default data, helper functions to use in your
-component, and more.
+The `#each` and `/each` properties are Svelte template syntax markers
+for looping through lists and adding the content between curly braces
+for each list entry.
 
-Here we are saying that the `List` component uses the `ListEntry` component.
+> Note: In addition to the `#each list as item` you can reference
+> the entry index using `#each list as item, index` and then use
+> the `index` property like a normal variable in the template.
+
+JavaScript code for the component goes inside the `<script>` element,
+and you can specify things like: default data, helper functions that
+you can use in your component, and more cool things.
+
+The important thing to note is that the `<script>` element needs to
+[export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export)
+an object as the default export, and you'll need to
+[import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
+and list each child component it uses.
+
+> Note: The syntax `{ ListEntry }` is ES6 shorthand for `{ ListEntry: ListEntry }`.
+
+For now, this component only needs to specify that the `List`
+component uses the `ListEntry` component.
 
 Let's compile all this together, and make sure our app works so far:
 
@@ -188,9 +212,10 @@ svelte compile --format iife ListEntry.html > ListEntry.js
 svelte compile --format iife List.html > List.js
 ```
 
-> Note: When you compile `List.html` it will complain that no name is
-> specified for the imported module `./ListEntry.html`. This is fine
-> for now, we will make the build smarter later on in this tutorial.
+> Note: For the early sections of this tutorial, when you compile
+> a component it might complain "no name is specified for the
+> imported module". This error is fine for now, but later on in this
+> tutorial we will make the build smarter so those errors go away.
 
 Then we will make an `index.html` like this:
 
@@ -199,7 +224,10 @@ Then we will make an `index.html` like this:
 <html>
 <head>
 	<title>Animal Phone Book</title>
-	<!-- IMPORTANT! Set the encoding so emoji show up correctly! -->
+	<!--
+	IMPORTANT! In order for the emoji to show up correctly, you
+	will need to set this <meta> element as shown here!
+	-->
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 </head>
 <body>
@@ -232,15 +260,15 @@ If you open this in your browser, you should see a page that,
 although not very pretty, lists two entries: one for Goat, and
 one for Dog.
 
-### Lessons learned: Child components
+###### 1. Section summary
 
 Using components inside other components requires you to specify which
-component you're using in the default export of the `<script>` tag :
+component you're using in the default export of the `<script>` tag, and
+passing parameters to a child component is as simple as setting a
+named attribute on the HTML element:
 
 ```html
-<div>
-	<ChildComponent />
-</div>
+<ChildComponent componentProperty="{{parentProperty}}" />
 
 <script>
 import ChildComponent from './ChildComponent.html'
@@ -249,15 +277,6 @@ export default {
 	components: { ChildComponent }
 }
 </script>
-```
-
-Passing parameters to a child component is as simple as setting a
-named attribute on the HTML element:
-
-```html
-<div>
-	<ChildComponent componentProperty="{{parentProperty}}" />
-</div>
 ```
 
 ## 2. Interacting with components
