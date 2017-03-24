@@ -1,0 +1,29 @@
+<ul>
+	{{#each animals as animal}}
+	<ListEntry
+		name="{{animal.name}}"
+		emoji="{{animal.emoji}}"
+		email="{{animal.email}}"
+		twitter="{{animal.twitter}}"
+		/>
+	{{/each}}
+</ul>
+
+<AddAnimal on:update="addNewAnimal(event)" />
+
+<script>
+	import ListEntry from './ListEntry.html'
+	import AddAnimal from './AddAnimal.html'
+
+	export default {
+		components: {
+			ListEntry,
+			AddAnimal
+		},
+		methods: {
+			addNewAnimal: function(event) {
+				console.log('parent', event)
+			}
+		}
+	}
+</script>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Animal Phone Book</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+</head>
+<body>
+	<div id="main"></div>
+	<script src="ListEntry.js"></script>
+	<script src="List.js"></script>
+	<script>
+		var app = new List({
+			target: document.getElementById('main'),
+			data: {
+				animals: [{
+					name: 'Goat',
+					emoji: '🐐',
+					email: 'goat@animal.com',
+					twitter: 'EverythingGoats'
+				},{
+					name: 'Dog',
+					emoji: '🐶',
+					email: 'dog@animal.com',
+					twitter: 'dog_rates'
+				}]
+			}
+		})
+	</script>
+</body>
+</html>

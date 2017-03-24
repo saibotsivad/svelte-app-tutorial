@@ -1,0 +1,20 @@
+<ul>
+	{{#each animals as animal}}
+	<ListEntry
+		name="{{animal.name}}"
+		emoji="{{animal.emoji}}"
+		email="{{animal.email}}"
+		twitter="{{animal.twitter}}"
+		/>
+	{{/each}}
+</ul>
+
+<script>
+	import ListEntry from './ListEntry.html'
+
+	export default {
+		components: {
+			ListEntry
+		}
+	}
+</script>
