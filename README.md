@@ -101,7 +101,7 @@ If you open this file in your browser (try `open index.html` from the
 command line) you'll see the header element render as "Hello world!",
 and 5 seconds later change to "Hello everyone!".
 
-## 0. Lesson summary
+###### 0. Section summary
 
 Components are written as single HTML files that we compile into
 JavaScript files.
