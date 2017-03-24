@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello World!</title>
+</head>
+<body>
+	<div id="main"></div>
+	<script src="HelloWorld.js"></script>
+	<script>
+		var app = new HelloWorld({
+			target: document.getElementById('main'),
+			data: {
+				name: 'world'
+			}
+		})
+		setTimeout(function() {
+			app.set({ name: 'everyone' })
+		}, 5000)
+	</script>
+</body>
+</html>
