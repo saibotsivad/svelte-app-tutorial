@@ -205,35 +205,7 @@ svelte compile --format iife List.html > List.js
 ```
 
 > Note: For the early sections of this tutorial, when you compile
-> a component it might comto our `List.html`
-as another component:
-
-```html
-<ul>
-	{{#each animals as animal}}
-		<ListEntry entry="{{animal}}" />
-	{{/each}}
-</ul>
-
-<FormAddAnimal on:submit="addNewAnimal(event)" />
-
-<script>
-import ListEntry from './ListEntry.html'
-import FormAddAnimal from './FormAddAnimal.html'
-
-export default {
-	components: {
-		ListEntry,
-		FormAddAnimal
-	},
-	methods: {
-		addNewAnimal: function(event) {
-			console.log('parent', event)
-		}
-	}
-}
-</script>
-```lain "no name is specified for the
+> a component it might complain "no name is specified for the
 > imported module". This error is fine for now, but later on in this
 > tutorial we will make the build smarter so those errors go away.
 
