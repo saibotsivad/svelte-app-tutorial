@@ -1,0 +1,35 @@
+<h1>Add Animal</h1>
+<p>
+	<label for="animal-name">Name</label>
+	<input type="text" name="animal-name" bind:value="animal.name">
+</p>
+<p>
+	<label for="animal-emoji">Emoji</label>
+	<input type="text" name="animal-emoji" bind:value="animal.emoji">
+</p>
+<p>
+	<label for="animal-email">Email</label>
+	<input type="text" name="animal-email" bind:value="animal.email">
+</p>
+<p>
+	<label for="animal-twitter">Twitter</label>
+	<input type="text" name="animal-twitter" bind:value="animal.twitter">
+</p>
+<button on:click="fire('submit', Object.assign({}, animal))">
+	Create Animal
+</button>
+
+<script>
+export default {
+	data() {
+		return {
+			animal: {
+				name: '',
+				emoji: '',
+				email: '',
+				twitter: ''
+			}
+		}
+	}
+}
+</script>

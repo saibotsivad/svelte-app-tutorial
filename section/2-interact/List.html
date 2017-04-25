@@ -1,29 +1,26 @@
 <ul>
 	{{#each animals as animal}}
-	<ListEntry
-		name="{{animal.name}}"
-		emoji="{{animal.emoji}}"
-		email="{{animal.email}}"
-		twitter="{{animal.twitter}}"
-		/>
+		<ListEntry entry="{{animal}}" />
 	{{/each}}
 </ul>
 
-<AddAnimal on:update="addNewAnimal(event)" />
+<FormAddAnimal on:submit="addAnimal(event)" />
 
 <script>
-	import ListEntry from './ListEntry.html'
-	import AddAnimal from './AddAnimal.html'
+import ListEntry from './ListEntry.html'
+import FormAddAnimal from './FormAddAnimal.html'
 
-	export default {
-		components: {
-			ListEntry,
-			AddAnimal
-		},
-		methods: {
-			addNewAnimal: function(event) {
-				console.log('parent', event)
-			}
+export default {
+	components: {
+		ListEntry,
+		FormAddAnimal
+	},
+	methods: {
+		addAnimal(animal) {
+			const animals = this.get('animals')
+			animals.push(animal)
+			this.set({ animals })
 		}
 	}
+}
 </script>

@@ -1,11 +1,3 @@
-<!--
-title: Building an application with Svelte
-description: A tutorial showing how to use Svelte to build an interactive application.
-pubdate: 2017-03-16
-author: Tobias Davis
-authorURL: http://saibotsivad.com
--->
-
 # Building an application with Svelte
 
 In the lineup of possible JS frameworks, a newer one has come out recently, and
@@ -14,8 +6,8 @@ the infamous [Rich Harris](https://twitter.com/Rich_Harris), is a
 "framework without the framework".
 
 You can read the official [Svelte guide](https://svelte.technology/guide),
-but I thought it would be more useful to walk you through what a web
-application looks like when made with Svelte.
+but I thought it would be useful to walk you through what a "serious"
+web application might look like when made with Svelte.
 
 ### What we'll be making
 
@@ -38,7 +30,7 @@ npm run start
 
 Then open [http://localhost:8001/](http://localhost:8001/) in your browser.
 
-## 0. Fast introduction to Svelte
+## 0. Fast introduction to Svelte [demo](./section/0-intro/)
 
 Much like Rich Harris' other JS contribution, [RactiveJS](http://www.ractivejs.org/),
 Svelte promotes the idea that components are written as plain old HTML files.
@@ -101,7 +93,7 @@ If you open this file in your browser (try `open index.html` from the
 command line) you'll see the header element render as "Hello world!",
 and 5 seconds later change to "Hello everyone!".
 
-###### 0. Section summary
+###### 0. Section summary [demo](./section/0-intro/)
 
 Components are written as single HTML files that we compile into
 JavaScript files.
@@ -109,7 +101,7 @@ JavaScript files.
 We can use those components as composable widgets, without needing
 to use a full framework.
 
-## 1. Child Components: Getting started
+## 1. Child Components: Getting started [demo](./section/1-child/)
 
 Our address book will have two main views: a list of all the animals we
 know, and a view for looking at each animal separately. Let's start by
@@ -159,9 +151,9 @@ components, because they are the easiest to reason about.
 
 The `#if` and `/if` properties are Svelte template syntax markers for
 conditionally displaying the content between the curly braces if the
-referenced property (in this case `entry.email` or `entry.twitter`) exists.
+referenced property (in this case if `entry.email` or `entry.twitter`) exists.
 
-Let's make the parent component, to see how we will use child components:
+Let's make the parent component, to see how we use child components:
 
 ```html
 <!-- List.html -->
@@ -213,7 +205,35 @@ svelte compile --format iife List.html > List.js
 ```
 
 > Note: For the early sections of this tutorial, when you compile
-> a component it might complain "no name is specified for the
+> a component it might comto our `List.html`
+as another component:
+
+```html
+<ul>
+	{{#each animals as animal}}
+		<ListEntry entry="{{animal}}" />
+	{{/each}}
+</ul>
+
+<FormAddAnimal on:submit="addNewAnimal(event)" />
+
+<script>
+import ListEntry from './ListEntry.html'
+import FormAddAnimal from './FormAddAnimal.html'
+
+export default {
+	components: {
+		ListEntry,
+		FormAddAnimal
+	},
+	methods: {
+		addNewAnimal: function(event) {
+			console.log('parent', event)
+		}
+	}
+}
+</script>
+```lain "no name is specified for the
 > imported module". This error is fine for now, but later on in this
 > tutorial we will make the build smarter so those errors go away.
 
@@ -260,7 +280,7 @@ If you open this in your browser, you should see a page that,
 although not very pretty, lists two entries: one for Goat, and
 one for Dog.
 
-###### 1. Section summary
+###### 1. Section summary [demo](./section/1-child/)
 
 Using components inside other components requires you to specify which
 component you're using in the default export of the `<script>` tag, and
@@ -279,156 +299,190 @@ export default {
 </script>
 ```
 
-## 2. Interacting with components
+## 2. Interacting with components [demo](./section/2-interact/)
 
 Our little app displays data, but we want to be able to add, edit, and
-delete animal contacts from our list. Let's setup adding first.
+delete animal contacts from our list. Let's think about how to add
+animals first.
 
-You can imagine some input form that looks like this:
+You can imagine a normal input form that looks like this:
 
 ```html
 <h1>Add Animal</h1>
-<form action="POST">
+<form action="http://site.com/api/add_animal" method="POST">
 	<p>
-		<label for="new-animal-name">Name</label>
-		<input type="text" name="new-animal-name">
+		<label for="animal-name">Name</label>
+		<input type="text" name="animal-name">
 	</p>
 	<p>
-		<label for="new-animal-emoji">Emoji</label>
-		<input type="text" name="new-animal-emoji">
+		<label for="animal-emoji">Emoji</label>
+		<input type="text" name="animal-emoji">
 	</p>
 	<p>
-		<label for="new-animal-email">Email</label>
-		<input type="text" name="new-animal-email">
+		<label for="animal-email">Email</label>
+		<input type="text" name="animal-email">
 	</p>
 	<p>
-		<label for="new-animal-twitter">Twitter</label>
-		<input type="text" name="new-animal-twitter">
+		<label for="animal-twitter">Twitter</label>
+		<input type="text" name="animal-twitter">
 	</p>
 	<button type="submit">Create Animal</button>
 </form>
 ```
 
-If we rewrote that as a component, it might look something like:
+If we imagine a "form" element (like the one above) as a composed
+set of components, we could imagine wanting to *use* that "form"
+like so:
 
 ```html
-<!-- AddAnimal.html -->
 <h1>Add Animal</h1>
-<form on:submit="handleSubmit(event)">
-	<p>
-		<label for="new-animal-name">Name</label>
-		<input bind:value="name" type="text" name="new-animal-name">
-	</p>
-	<p>
-		<label for="new-animal-emoji">Emoji</label>
-		<input bind:value="emoji" type="text" name="new-animal-emoji">
-	</p>
-	<p>
-		<label for="new-animal-email">Email</label>
-		<input bind:value="email" type="text" name="new-animal-email">
-	</p>
-	<p>
-		<label for="new-animal-twitter">Twitter</label>
-		<input bind:value="twitter" type="text" name="new-animal-twitter">
-	</p>
-	<button type="submit">Create Animal</button>
-</form>
+<FormAddAnimal
+	on:submit="saveData(event)"
+/>
+```
+
+So then we would *write* our "form" component like so:
+
+```html
+<!-- FormAddAnimal.html -->
+<h1>Add Animal</h1>
+<p>
+	<label for="animal-name">Name</label>
+	<input type="text" name="animal-name" bind:value="animal.name">
+</p>
+<p>
+	<label for="animal-emoji">Emoji</label>
+	<input type="text" name="animal-emoji" bind:value="animal.emoji">
+</p>
+<p>
+	<label for="animal-email">Email</label>
+	<input type="text" name="animal-email" bind:value="animal.email">
+</p>
+<p>
+	<label for="animal-twitter">Twitter</label>
+	<input type="text" name="animal-twitter" bind:value="animal.twitter">
+</p>
+<button on:click="fire('submit', animal)">Create Animal</button>
 
 <script>
 export default {
-	methods: {
-		handleSubmit(event) {
-			// prevent the page from reloading
-			event.preventDefault()
-
-			const animal = {
-				name: this.get('name'),
-				emoji: this.get('emoji'),
-				email: this.get('email'),
-				twitter: this.get('twitter')
+	data() {
+		return {
+			animal: {
+				name: '',
+				emoji: '',
+				email: '',
+				twitter: ''
 			}
-			console.log('animal', animal)
 		}
 	}
 }
 </script>
 ```
 
-The `bind:value="name"` means that, when the text in the input
-element is updated, you can do `this.get('name')` to get the
-updated value.
+* We use `bind:value` so that changing the `<input>` text will
+	update our bound value.
+* We need to set our default values to empty strings or they
+	will appear as `undefined`. (Try removing one.)
+* The syntax `fire('submit', animal)` means that the *component*
+	will emit an event named `submit`, with the value being
+	the bound values.
 
-To see this in action, you'll need to:
-
-### Add the component to the main view
-
-Update the `List.html` file to look like this:
+Now we can use the `FormAddAnimal.html` in our main `List.html`
+as another component:
 
 ```html
-<!-- List.html -->
 <ul>
 	{{#each animals as animal}}
-	<ListEntry
-		name="{{animal.name}}"
-		emoji="{{animal.emoji}}"
-		email="{{animal.email}}"
-		twitter="{{animal.twitter}}"
-		/>
+		<ListEntry entry="{{animal}}" />
 	{{/each}}
 </ul>
 
-<AddAnimal />
+<FormAddAnimal on:submit="addAnimal(event)" />
 
 <script>
-	import ListEntry from './ListEntry.html'
-	import AddAnimal from './AddAnimal.html'
+import ListEntry from './ListEntry.html'
+import FormAddAnimal from './FormAddAnimal.html'
 
-	export default {
-		components: {
-			ListEntry,
-			AddAnimal
+export default {
+	components: {
+		ListEntry,
+		FormAddAnimal
+	},
+	methods: {
+		addAnimal(animal) {
+			const animals = this.get('animals')
+			animals.push(animal)
+			this.set({ animals })
 		}
 	}
+}
 </script>
 ```
 
-Remember that you need to import the component and add it to the
-default export `components` property.
+* The `on:submit="addAnimal(event)"` will capture the `submit`
+	event fired by the `FormAddAnimal` component, using the
+	special variable name `event`.
+* It calls a method `addAnimal`, which is a function defined
+	in the `methods` property.
 
-### Add the script to the HTML
+> Note: The `{ addAnimal(params) {} }` syntax is equivalent to
+> the `{ addAnimal: function(params) {} }` syntax.
 
-Update the `index.html` so that the `<script>` elements are:
+If you were to run this now, you would notice a fatal flaw: each
+time you add a new animal, it modifies all newly-added animals.
+
+This is because the `animals.push(animal)` pushes a *reference*
+to the `FormAddAnimal` object. When you modify the animal in the
+component, you're actually modifying the *reference* as well.
+
+How to fix it? There are two ways:
+
+* Clone the object where you handle the `on:submit` event, e.g.
+	inside the `List.html`. The bad part is that anywhere you
+	use the `FormAddAnimal` component, you'll need to remember
+	to clone what is emitted.
+* Clone the object "just in time" in the `FormAddAnimal` component,
+	so that component users don't have to remember this issue.
+
+The second choice is almost always better, so we can modify
+the `on:click` button event in `FormAddAnimal.html` so that it
+looks like this:
 
 ```html
-<script src="AddAnimal.js"></script>
-<script src="ListEntry.js"></script>
-<script src="List.js"></script>
+<button on:click="fire('submit', Object.assign({}, animal))">
+	Create Animal
+</button>
 ```
 
-### Compile the changed components
+> Note: What is the general rule? When emitting data objects,
+> you should emit *cloned* objects, so that consumers of your
+> component do not need to worry about reference issues.
 
-Re-compile the new and changed components:
+If you check out the [demo](./section/2-interact/) at this point,
+you can enter a name, email, twitter handle, and emoji for your
+new animal. (On Mac, try the `control+command+space` shortcut to
+bring up an emoji picker.)
 
-```bash
-svelte compile --format iife List.html > List.js
-svelte compile --format iife AddAnimal.html > AddAnimal.js
+###### 2. Section summary [demo](./section/2-interact/)
+
+Components can fire and handle events. This is the primary
+way of passing data between components.
+
+Methods have access to `this` and can modify the component data.
+
+```html
+<!-- Component.html -->
+<button on:click="fire('something', 3)">fire</button>
+<!-- Consumer.html -->
+<Component on:something="stuff(event)" />
+<script>
+export default {
+	methods: {
+		stuff(number) {
+			// number === 3
+		}
+	}
+}
+</script>
 ```
-
-### Make it better
-
-If everything works correctly, when you open the `index.html`
-page in your browser, you'll see a form that you can type into,
-and when you click the button will log the new animal to the
-console.
-
-What you will also notice is that the input elements all
-say `undefined`, and if you click the button without changing
-those properties, they will remain undefined.
-
-The reason this happens is 
-
-
-
-
-
-
