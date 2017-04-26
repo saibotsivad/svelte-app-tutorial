@@ -1,0 +1,15 @@
+<ul>
+	{{#each animals as animal}}
+		<ListEntry entry="{{animal}}" />
+	{{/each}}
+</ul>
+
+<script>
+import ListEntry from './ListEntry.html'
+
+export default {
+	components: {
+		ListEntry
+	}
+}
+</script>

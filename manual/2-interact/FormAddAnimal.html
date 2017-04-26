@@ -15,20 +15,27 @@
 	<label for="animal-twitter">Twitter</label>
 	<input type="text" name="animal-twitter" bind:value="animal.twitter">
 </p>
-<button on:click="fire('submit', Object.assign({}, animal))">
+<button on:click="create(animal)">
 	Create Animal
 </button>
 
 <script>
+const emptyAnimal = () => ({
+	name: '',
+	emoji: '',
+	email: '',
+	twitter: ''
+})
 export default {
 	data() {
 		return {
-			animal: {
-				name: '',
-				emoji: '',
-				email: '',
-				twitter: ''
-			}
+			animal: emptyAnimal()
+		}
+	},
+	methods: {
+		create(animal) {
+			this.fire('submit', animal)
+			this.set({ animal: emptyAnimal() })
 		}
 	}
 }

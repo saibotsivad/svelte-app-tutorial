@@ -9,13 +9,13 @@ You can read the official [Svelte guide](https://svelte.technology/guide),
 but I thought it would be useful to walk you through what a "serious"
 web application might look like when made with Svelte.
 
-### What we'll be making
+## What we'll be making
 
 In this tutorial we will build a very basic web app that lets you create
 and edit records like a real business-type app would do. We'll build an
 animal address book. It's like an address book, but for animals! 🐐🐶🦄
 
-### Follow along
+## Follow along
 
 Each section of this tutorial is in a sub-folder of this repo. You can
 build and view all the different sections like this:
@@ -30,7 +30,7 @@ npm run start
 
 Then open [http://localhost:8001/](http://localhost:8001/) in your browser.
 
-## 0. Fast introduction to Svelte [demo](./section/0-intro/)
+# 0. Fast introduction to Svelte <small>[demo](./manual/0-intro/)</small>
 
 Much like Rich Harris' other JS contribution, [RactiveJS](http://www.ractivejs.org/),
 Svelte promotes the idea that components are written as plain old HTML files.
@@ -93,7 +93,7 @@ If you open this file in your browser (try `open index.html` from the
 command line) you'll see the header element render as "Hello world!",
 and 5 seconds later change to "Hello everyone!".
 
-###### 0. Section summary [demo](./section/0-intro/)
+###### 0. Section summary [demo](./manual/0-intro/)
 
 Components are written as single HTML files that we compile into
 JavaScript files.
@@ -101,7 +101,7 @@ JavaScript files.
 We can use those components as composable widgets, without needing
 to use a full framework.
 
-## 1. Child Components: Getting started [demo](./section/1-child/)
+# 1. Child Components: Getting started [demo](./manual/1-child/)
 
 Our address book will have two main views: a list of all the animals we
 know, and a view for looking at each animal separately. Let's start by
@@ -151,7 +151,8 @@ components, because they are the easiest to reason about.
 
 The `#if` and `/if` properties are Svelte template syntax markers for
 conditionally displaying the content between the curly braces if the
-referenced property (in this case if `entry.email` or `entry.twitter`) exists.
+referenced property (in this case if `entry.email` or `entry.twitter`)
+exists.
 
 Let's make the parent component, to see how we use child components:
 
@@ -190,9 +191,11 @@ The important thing to note is that the `<script>` element needs to
 [export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export)
 an object as the default export, and you'll need to
 [import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
-and list each child component it uses.
+and list each child component it uses in the exported
+`components` object.
 
-> Note: The syntax `{ ListEntry }` is ES6 shorthand for `{ ListEntry: ListEntry }`.
+> Note: The syntax `{ ListEntry }` is ES6 shorthand
+> for `{ ListEntry: ListEntry }`.
 
 For now, this component only needs to specify that the `List`
 component uses the `ListEntry` component.
@@ -218,7 +221,7 @@ Then we will make an `index.html` like this:
 	<title>Animal Phone Book</title>
 	<!--
 	IMPORTANT! In order for the emoji to show up correctly, you
-	will need to set this <meta> element as shown here!
+	will probably need to set this <meta> element as shown here!
 	-->
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 </head>
@@ -252,7 +255,7 @@ If you open this in your browser, you should see a page that,
 although not very pretty, lists two entries: one for Goat, and
 one for Dog.
 
-###### 1. Section summary [demo](./section/1-child/)
+###### 1. Section summary [demo](./manual/1-child/)
 
 Using components inside other components requires you to specify which
 component you're using in the default export of the `<script>` tag, and
@@ -271,7 +274,7 @@ export default {
 </script>
 ```
 
-## 2. Interacting with components [demo](./section/2-interact/)
+# 2. Interacting with components [demo](./manual/2-interact/)
 
 Our little app displays data, but we want to be able to add, edit, and
 delete animal contacts from our list. Let's think about how to add
@@ -334,18 +337,25 @@ So then we would *write* our "form" component like so:
 	<label for="animal-twitter">Twitter</label>
 	<input type="text" name="animal-twitter" bind:value="animal.twitter">
 </p>
-<button on:click="fire('submit', animal)">Create Animal</button>
+<button on:click="create(animal)">Create Animal</button>
 
 <script>
+const emptyAnimal = () => ({
+	name: '',
+	emoji: '',
+	email: '',
+	twitter: ''
+})
 export default {
 	data() {
 		return {
-			animal: {
-				name: '',
-				emoji: '',
-				email: '',
-				twitter: ''
-			}
+			animal: emptyAnimal()
+		}
+	},
+	methods: {
+		create(animal) {
+			this.fire('submit', animal)
+			this.set({ animal: emptyAnimal() })
 		}
 	}
 }
@@ -356,29 +366,34 @@ export default {
 	update our bound value.
 * We need to set our default values to empty strings or they
 	will appear as `undefined`. (Try removing one.)
-* The syntax `fire('submit', animal)` means that the *component*
+* The syntax `create(animal)` means that clicking the button
+	will call the function in the `methods` object.
+* The `this.fire('submit', animal)` means that the *component*
 	will emit an event named `submit`, with the value being
 	the bound values.
+* After we fire off the event, we'll clear out the form. (The
+	`emptyAnimal` is a function so that it's never modified.)
 
-Now we can use the `FormAddAnimal.html` in our main `List.html`
-as another component:
+So far the `List.html` has been our root component, but we want
+to start composing multiple components into an application.
+
+Let's make an app component and add the `FormAddAnimal.html`
+to it. We'll need to change the `index.html` to use the
+compiled `App.js` instead of the `List.js`.
 
 ```html
-<ul>
-	{{#each animals as animal}}
-		<ListEntry entry="{{animal}}" />
-	{{/each}}
-</ul>
+<!-- App.html -->
+<List animals="{{animals}}" />
 
 <FormAddAnimal on:submit="addAnimal(event)" />
 
 <script>
-import ListEntry from './ListEntry.html'
+import List from './List.html'
 import FormAddAnimal from './FormAddAnimal.html'
 
 export default {
 	components: {
-		ListEntry,
+		List,
 		FormAddAnimal
 	},
 	methods: {
@@ -401,42 +416,12 @@ export default {
 > Note: The `{ addAnimal(params) {} }` syntax is equivalent to
 > the `{ addAnimal: function(params) {} }` syntax.
 
-If you were to run this now, you would notice a fatal flaw: each
-time you add a new animal, it modifies all newly-added animals.
-
-This is because the `animals.push(animal)` pushes a *reference*
-to the `FormAddAnimal` object. When you modify the animal in the
-component, you're actually modifying the *reference* as well.
-
-How to fix it? There are two ways:
-
-* Clone the object where you handle the `on:submit` event, e.g.
-	inside the `List.html`. The bad part is that anywhere you
-	use the `FormAddAnimal` component, you'll need to remember
-	to clone what is emitted.
-* Clone the object "just in time" in the `FormAddAnimal` component,
-	so that component users don't have to remember this issue.
-
-The second choice is almost always better, so we can modify
-the `on:click` button event in `FormAddAnimal.html` so that it
-looks like this:
-
-```html
-<button on:click="fire('submit', Object.assign({}, animal))">
-	Create Animal
-</button>
-```
-
-> Note: What is the general rule? When emitting data objects,
-> you should emit *cloned* objects, so that consumers of your
-> component do not need to worry about reference issues.
-
-If you check out the [demo](./section/2-interact/) at this point,
+If you check out the [demo](./manual/2-interact/) at this point,
 you can enter a name, email, twitter handle, and emoji for your
 new animal. (On Mac, try the `control+command+space` shortcut to
 bring up an emoji picker.)
 
-###### 2. Section summary [demo](./section/2-interact/)
+###### 2. Section summary [demo](./manual/2-interact/)
 
 Components can fire and handle events. This is the primary
 way of passing data between components.

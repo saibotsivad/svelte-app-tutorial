@@ -1,8 +1,15 @@
 const Remarkable = require('remarkable')
+const markdownToc = require('markdown-toc')
 const fs = require('fs')
 
-const md = new Remarkable()
-const content = md.render(fs.readFileSync('./README.md', { encoding: 'utf8' }))
+const md = new Remarkable({
+	html: true,
+	typographer: true
+})
+
+const readme = fs.readFileSync('./README.md', { encoding: 'utf8' })
+const toc = md.render(markdownToc(readme, { maxdepth: 1 }).content)
+const content = md.render(readme)
 
 const html = `<!doctype html>
 <html>
@@ -20,11 +27,28 @@ const html = `<!doctype html>
 			margin: 0 auto;
 			max-width: 800px;
 		}
+		.table-of-contents {
+			font-size: 20px;
+		}
+		.table-of-contents a:nth-child(2) {
+			font-size: 75%;
+		}
+		.table-of-contents a:nth-child(2):before {
+			content: "(";
+		}
+		.table-of-contents a:nth-child(2):after {
+			content: ")";
+		}
 		</style>
 	</head>
 	<body>
 		<div class="container">
-${content}
+			<h1>Svelte App Tutorial</h1>
+			<p class="lead">Table of Contents</p>
+			<div class="table-of-contents">
+				${toc}
+			</div>
+			${content}
 		</div>
 	</body>
 </html>

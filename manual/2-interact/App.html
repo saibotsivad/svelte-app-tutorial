@@ -1,18 +1,14 @@
-<ul>
-	{{#each animals as animal}}
-		<ListEntry entry="{{animal}}" />
-	{{/each}}
-</ul>
+<List animals="{{animals}}" />
 
 <FormAddAnimal on:submit="addAnimal(event)" />
 
 <script>
-import ListEntry from './ListEntry.html'
+import List from './List.html'
 import FormAddAnimal from './FormAddAnimal.html'
 
 export default {
 	components: {
-		ListEntry,
+		List,
 		FormAddAnimal
 	},
 	methods: {

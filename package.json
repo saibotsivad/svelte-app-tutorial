@@ -4,17 +4,19 @@
   "description": "Learn how to build a web app using Svelte.",
   "scripts": {
     "start": "http-server -p 8001 -c-1",
-    "watch": "",
+    "watch": "node watch.js",
     "build": "npm-run-all --parallel build:*",
     "build:website": "node build.js",
-    "build:0": "./build.sh section/0-intro",
-    "build:1": "./build.sh section/1-child",
-    "build:2": "./build.sh section/2-interact"
+    "build:0": "./build.sh manual/0-intro",
+    "build:1": "./build.sh manual/1-child",
+    "build:2": "./build.sh manual/2-interact"
   },
   "author": "saibotsivad",
   "license": "VOL",
   "dependencies": {
+    "debounce": "^1.0.2",
     "http-server": "^0.9.0",
+    "markdown-toc": "^1.1.0",
     "npm-run-all": "^4.0.2",
     "remarkable": "^1.7.1",
     "svelte-cli": "^1.3.5"

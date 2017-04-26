@@ -1,2 +1,5 @@
 /node_modules
 /index.html
+/manual/**/*.js
+/builder/**/build.js
+/builder/**/*.build.js
