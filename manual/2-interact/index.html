@@ -2,18 +2,17 @@
 <html>
 <head>
 	<title>Animal Phone Book</title>
-	<!-- set the encoding for proper emoji support -->
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<meta charset="UTF-8">
 </head>
 <body>
-	<div id="main"></div>
+	<div id="list"></div>
+	<div id="add"></div>
 	<script src="FormAddAnimal.js"></script>
 	<script src="ListEntry.js"></script>
 	<script src="List.js"></script>
-	<script src="App.js"></script>
 	<script>
-		var app = new App({
-			target: document.getElementById('main'),
+		var list = new List({
+			target: document.getElementById('list'),
 			data: {
 				animals: [{
 					name: 'Goat',
@@ -27,6 +26,14 @@
 					twitter: 'dog_rates'
 				}]
 			}
+		})
+		var addAnimal = new FormAddAnimal({
+			target: document.getElementById('add')
+		})
+		addAnimal.on('submit', function(animal) {
+			var animals = list.get('animals')
+			animals.push(animal)
+			list.set({ animals })
 		})
 	</script>
 </body>

@@ -232,7 +232,7 @@ Then we will make an `index.html` like this:
 	<script src="ListEntry.js"></script>
 	<script src="List.js"></script>
 	<script>
-		var app = new List({
+		var list = new List({
 			target: document.getElementById('list'),
 			data: {
 				animals: [{
@@ -376,47 +376,55 @@ export default {
 * After we fire off the event, we'll clear out the form. (The
 	`emptyAnimal` is a function so that it's never modified.)
 
-So far the `List.html` has been our root component, but we want
-to start composing multiple components into an application.
-
-Let's make an app component and add the `FormAddAnimal.html`
-to it. We'll need to change the `index.html` to use the
-compiled `App.js` instead of the `List.js`.
+Let's add this to our `index.html`:
 
 ```html
-<!-- App.html -->
-<List animals="{{animals}}" />
-
-<FormAddAnimal on:submit="addAnimal(event)" />
-
-<script>
-import List from './List.html'
-import FormAddAnimal from './FormAddAnimal.html'
-
-export default {
-	components: {
-		List,
-		FormAddAnimal
-	},
-	methods: {
-		addAnimal(animal) {
-			const animals = this.get('animals')
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Animal Phone Book</title>
+	<meta charset="UTF-8">
+</head>
+<body>
+	<div id="list"></div>
+	<div id="add"></div>
+	<script src="FormAddAnimal.js"></script>
+	<script src="ListEntry.js"></script>
+	<script src="List.js"></script>
+	<script>
+		var list = new List({
+			target: document.getElementById('list'),
+			data: {
+				animals: [{
+					name: 'Goat',
+					emoji: '🐐',
+					email: 'goat@animal.com',
+					twitter: 'EverythingGoats'
+				},{
+					name: 'Dog',
+					emoji: '🐶',
+					email: 'dog@animal.com',
+					twitter: 'dog_rates'
+				}]
+			}
+		})
+		var addAnimal = new FormAddAnimal({
+			target: document.getElementById('add')
+		})
+		addAnimal.on('submit', function(animal) {
+			var animals = list.get('animals')
 			animals.push(animal)
-			this.set({ animals })
-		}
-	}
-}
-</script>
+			list.set({ animals })
+		})
+	</script>
+</body>
+</html>
 ```
 
-* The `on:submit="addAnimal(event)"` will capture the `submit`
-	event fired by the `FormAddAnimal` component, using the
-	special variable name `event`.
-* It calls a method `addAnimal`, which is a function defined
-	in the `methods` property.
-
-> Note: The `{ addAnimal(params) {} }` syntax is equivalent to
-> the `{ addAnimal: function(params) {} }` syntax.
+Here we have added *two* components to our main page. The
+`addAnimal` variable acts as an event emitter, and when the
+component fires the `submit` event we get the current list
+of animals and add to it.
 
 If you check out the [demo](./manual/2-interact/) at this point,
 you can enter a name, email, twitter handle, and emoji for your
@@ -431,10 +439,10 @@ way of passing data between components.
 Methods have access to `this` and can modify the component data.
 
 ```html
-<!-- Component.html -->
+<!-- MyComponent.html -->
 <button on:click="fire('something', 3)">fire</button>
 <!-- Consumer.html -->
-<Component on:something="stuff(event)" />
+<MyComponent on:something="stuff(event)" />
 <script>
 export default {
 	methods: {
