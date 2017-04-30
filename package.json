@@ -7,9 +7,9 @@
     "watch": "node watch.js",
     "build": "npm-run-all --parallel build:*",
     "build:website": "node build.js",
-    "build:0": "./build.sh manual/0-intro",
-    "build:1": "./build.sh manual/1-child",
-    "build:2": "./build.sh manual/2-interact"
+    "build:0": "pushd manual/0-intro && ./build.sh && popd",
+    "build:1": "pushd manual/1-child && ./build.sh && popd",
+    "build:2": "pushd manual/2-interact && ./build.sh && popd"
   },
   "author": "saibotsivad",
   "license": "VOL",
