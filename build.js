@@ -5,6 +5,10 @@ const fs = require('fs')
 const md = new Remarkable({
 	html: true,
 	typographer: true
+}).use(function(mark) {
+	mark.renderer.rules.heading_open = (tokens, idx) => {
+		return '<h' + tokens[idx].hLevel + ' id=' + markdownToc.slugify(tokens[idx + 1].content) + '>'
+	}
 })
 
 const readme = fs.readFileSync('./README.md', { encoding: 'utf8' })
