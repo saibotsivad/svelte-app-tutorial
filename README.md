@@ -479,7 +479,7 @@ export default {
 
 <div class="section-links">
 
-* [code](https://github.com/saibotsivad/svelte-app-tutorial/tree/master/manual/3-testing)
+* [code](https://github.com/saibotsivad/svelte-app-tutorial/tree/master/builder/3-testing)
 
 </div>
 

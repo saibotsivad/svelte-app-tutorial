@@ -11,7 +11,7 @@
     "build:1": "pushd manual/1-child && ./build.sh && popd",
     "build:2": "pushd manual/2-interact && ./build.sh && popd",
     "test": "npm-run-all --parallel test:*",
-    "test:3": "pushd manual/3-testing && ./test.sh && popd"
+    "test:3": "pushd builder/3-testing && ./test.sh && popd"
   },
   "author": "saibotsivad",
   "license": "VOL",
