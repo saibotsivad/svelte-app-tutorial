@@ -30,7 +30,14 @@ npm run start
 
 Then open [http://localhost:8001/](http://localhost:8001/) in your browser.
 
-# 0. Fast introduction to Svelte <small>[demo](./manual/0-intro/)</small>
+# 0. Fast introduction to Svelte
+
+<div class="section-links">
+
+* [demo](./manual/0-intro/)
+* [code](https://github.com/saibotsivad/svelte-app-tutorial/tree/master/manual/0-intro)
+
+</div>
 
 Much like Rich Harris' other JS contribution, [RactiveJS](http://www.ractivejs.org/),
 Svelte promotes the idea that components are written as plain old HTML files.
@@ -93,7 +100,7 @@ If you open this file in your browser (try `open index.html` from the
 command line) you'll see the header element render as "Hello world!",
 and 5 seconds later change to "Hello everyone!".
 
-###### 0. Section summary [demo](./manual/0-intro/)
+###### 0. Section summary
 
 Components are written as single HTML files that we compile into
 JavaScript files.
@@ -101,7 +108,14 @@ JavaScript files.
 We can use those components as composable widgets, without needing
 to use a full framework.
 
-# 1. Child Components: Getting started [demo](./manual/1-child/)
+# 1. Child Components: Getting started
+
+<div class="section-links">
+
+* [demo](./manual/1-child/)
+* [code](https://github.com/saibotsivad/svelte-app-tutorial/tree/master/manual/1-child)
+
+</div>
 
 Our address book will have two main views: a list of all the animals we
 know, and a view for looking at each animal separately. Let's start by
@@ -257,7 +271,7 @@ If you open this in your browser, you should see a page that,
 although not very pretty, lists two entries: one for Goat, and
 one for Dog.
 
-###### 1. Section summary [demo](./manual/1-child/)
+###### 1. Section summary
 
 Using components inside other components requires you to specify which
 component you're using in the default export of the `<script>` tag, and
@@ -276,7 +290,14 @@ export default {
 </script>
 ```
 
-# 2. Interacting with components [demo](./manual/2-interact/)
+# 2. Interacting with components
+
+<div class="section-links">
+
+* [demo](./manual/2-interact/)
+* [code](https://github.com/saibotsivad/svelte-app-tutorial/tree/master/manual/2-interact)
+
+</div>
 
 Our little app displays data, but we want to be able to add, edit, and
 delete animal contacts from our list. Let's think about how to add
@@ -431,7 +452,7 @@ you can enter a name, email, twitter handle, and emoji for your
 new animal. (On Mac, try the `control+command+space` shortcut to
 bring up an emoji picker.)
 
-###### 2. Section summary [demo](./manual/2-interact/)
+###### 2. Section summary
 
 Components can fire and handle events. This is the primary
 way of passing data between components.
@@ -454,7 +475,13 @@ export default {
 </script>
 ```
 
-# 3. Testing components [demo](./manual/3-testing/)
+# 3. Testing components
+
+<div class="section-links">
+
+* [code](https://github.com/saibotsivad/svelte-app-tutorial/tree/master/manual/3-testing)
+
+</div>
 
 Since we've figured out how our components should interact, we
 have behaviour that should be tested. The tests serve as solid
@@ -602,7 +629,7 @@ of making complex templates.
 > Avoid logic in the template section of your component
 > where possible. Prefer computed properties and methods.
 
-###### 3. Section summary [demo](./manual/3-testing/)
+###### 3. Section summary
 
 Since you can interact with a component using public
 methods, testing components is as simple or complex as
