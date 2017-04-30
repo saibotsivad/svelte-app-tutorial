@@ -453,3 +453,181 @@ export default {
 }
 </script>
 ```
+
+# 3. Testing components [demo](./manual/3-testing/)
+
+Since we've figured out how our components should interact, we
+have behaviour that should be tested. The tests serve as solid
+proof that our component does what we think, and they serve also
+as a concrete assertion of the component API.
+
+Our tests will assert that when the button is clicked, the
+component will emit an object with the form fields.
+
+Right away this should raise questions in your head:
+
+* What happens *after* you click submit? Should the form stay
+	filled out, or should it reset?
+* What happens if you click submit and nothing is filled out?
+	Should it still fire an event?
+* Should the emitted `animal` object contain *all* properties,
+	so some will be empty strings? Or should the `animal` object
+	only contain the properties with data?
+
+The great thing about writing good tests is that you can make
+those decisions and assertions and, if you ever decide to change
+your mind, it will be clear that you did it intentionally, and
+that you didn't accidentally break something.
+
+> Lower the friction of writing tests as much as possible.
+
+We want it to be as easy as possible to write tests, **and** as
+easy as possible to reference tests. In this tutorial I've written
+tests using [tape](https://www.npmjs.com/package/tape), and placed
+the test files next to the component files, with the extension
+`*.spec.js` to make it easier to find them.
+
+To start with, we will make a test file for `FormAddAnimal.html`
+and simply assert that the component can be created without throwing
+any errors:
+
+```js
+const test = require('tape')
+const FormAddAnimal = require('./FormAddAnimal.html')
+
+test('creating the component does not throw error', t => {
+	const component = new FormAddAnimal()
+	t.end()
+})
+```
+
+You should note that `require('./FormAddAnimal.html')` will fail,
+because NodeJS cannot natively require HTML files. In order to
+make the component tests work, we will need to first compile the
+HTML component files into JavaScript.
+
+The easiest way I have found is to use a combination of
+
+* [browserify](http://browserify.org/) Bundling/build tool
+* [sveltify](https://github.com/TehShrike/sveltify) Browserify plugin for Svelte
+* [tape-run](https://www.npmjs.com/package/tape-run) Run tests in a headless browser
+
+After all those are installed, the command to run them together is:
+
+```bash
+browserify -t [ sveltify ] FormAddAnimal.spec.js | tape-run
+```
+
+This does the following:
+
+* Input the `FormAddAnimal.spec.js` file to `browserify`
+* Use the `sveltify` transform (`-t`) which will handle the
+	`require` of HTML files and compile them first
+* Pipe the output JS bundled file to `tape-run`, which uses
+	the electron browser in headless mode by default
+
+After you've confirmed that to be working, we can add another
+test to the same file:
+
+```js
+test('modified input values in fired event', t => {
+	// attach the component to <body>
+	const component = new FormAddAnimal({
+		target: window.document.querySelector('body'),
+		// set the form values
+		data: {
+			animal: {
+				name: 'Bob',
+				emoji: '🦄'
+			}
+		}
+	})
+
+	// test the value of the fired event
+	component.on('submit', animal => {
+		t.equal(animal.name, 'Bob', 'name should be emitted')
+		t.equal(animal.emoji, '🦄', 'emoji should be emitted')
+		t.notOk(animal.email, 'email should not exist')
+		t.notOk(animal.twitter, 'twitter should not exist')
+		// complete the test
+		t.end()
+	})
+
+	// simulate clicking the button
+	const click = new window.MouseEvent('click')
+	window.document.querySelector('button').dispatchEvent(click)
+})
+```
+
+Another way to write tests is to write your component so
+it uses [computed properties](https://svelte.technology/guide#computed-properties)
+instead of putting the logic in your template. Then you can
+test the computed property instead of testing your template,
+and that is usually an easier test to read:
+
+```html
+<!-- Example.html -->
+{{#if someValue}}
+<p>This displays if `calories` is greater than 5.</p>
+{{/if}}
+<script>
+export default {
+	computed: {
+		someValue(calories) {
+			return calories > 5
+		}
+	}
+}
+</script>
+```
+
+Then your test could simply be:
+
+```js
+const test = require('tape')
+const FormAddAnimal = require('./FormAddAnimal.html')
+
+test('computed value is true when over 5', t => {
+	const component = new FormAddAnimal({
+		data: { calories: 20 }
+	})
+	t.ok(component.get('someValue'), 'should be truthy')
+	t.end()
+})
+```
+
+The same is true for using methods in your component, instead
+of making complex templates.
+
+> Avoid logic in the template section of your component
+> where possible. Prefer computed properties and methods.
+
+###### 3. Section summary [demo](./manual/3-testing/)
+
+Since you can interact with a component using public
+methods, testing components is as simple or complex as
+you want to make it.
+
+You'll get plenty of mileage off simple `tape` tests,
+using browserify and sveltify, especially if you can put
+your logic into computed properties or methods.
+
+```html
+<!-- MyComponent.html -->
+<button on:click="fire('something', 3)">fire</button>
+```
+
+```js
+// MyComponent.spec.js
+const test = require('tape')
+const MyComponent = require('./MyComponent.html')
+
+test('create component', t => {
+	const component = new MyComponent()
+	t.end()
+})
+```
+
+```bash
+browserify -t [ sveltify ] MyComponent.spec.js | tape-run
+```
