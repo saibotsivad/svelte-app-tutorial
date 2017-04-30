@@ -3,18 +3,20 @@
 <head>
 	<title>Animal Phone Book</title>
 	<!--
-	IMPORTANT! In order for the emoji to show up correctly, you
-	will probably need to set this <meta> element as shown here!
+	IMPORTANT! If you are testing with a server that does not
+	set the `charset` of the content type, some browsers will
+	not display the emoji correctly. You can overcome this by
+	setting the charset as a <meta> tag:
 	-->
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<meta charset="UTF-8">
 </head>
 <body>
-	<div id="main"></div>
+	<div id="list"></div>
 	<script src="ListEntry.js"></script>
 	<script src="List.js"></script>
 	<script>
 		var app = new List({
-			target: document.getElementById('main'),
+			target: document.getElementById('list'),
 			data: {
 				animals: [{
 					name: 'Goat',
