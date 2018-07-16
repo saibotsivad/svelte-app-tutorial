@@ -9,6 +9,9 @@ You can read the official [Svelte guide](https://svelte.technology/guide),
 but I thought it would be useful to walk you through what a "serious"
 web application might look like when made with Svelte.
 
+> Note: This tutorial has been updated 2018-07-16 to follow
+> Svelte version 2.
+
 ## What we'll be making
 
 In this tutorial we will build a very basic web app that lets you create
