@@ -31,7 +31,7 @@
 			target: document.getElementById('add')
 		})
 		addAnimal.on('submit', function(animal) {
-			var animals = list.get('animals')
+			var animals = list.get().animals
 			animals.push(animal)
 			list.set({ animals })
 		})

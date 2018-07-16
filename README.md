@@ -46,12 +46,12 @@ Here's a very simple component:
 
 ```html
 <!-- HelloWorld.html -->
-<h1>Hello {{name}}!</h1>
+<h1>Hello {name}!</h1>
 ```
 
 That's the whole component!
 
-The `{{name}}` is a [mustache](http://mustache.github.io/)-like syntax unique
+The `{name}` is a [mustache](http://mustache.github.io/)-like syntax unique
 to Svelte (it has some extra bits of functionality). When the component property
 updates, the template will too.
 
@@ -147,15 +147,15 @@ Let's write that as a Svelte component:
 ```html
 <!-- ListEntry.html -->
 <li>
-	<h1>{{entry.emoji}} {{entry.name}}</h1>
-	{{#if entry.email}}
+	<h1>{entry.emoji} {entry.name}</h1>
+	{#if entry.email}
 		&middot;
-		<a href="mailto:{{entry.email}}">email</a>
-	{{/if}}
-	{{#if entry.twitter}}
+		<a href="mailto:{entry.email}">email</a>
+	{/if}
+	{#if entry.twitter}
 		&middot;
-		<a href="https://twitter.com/{{entry.twitter}}">twitter</a>
-	{{/if}}
+		<a href="https://twitter.com/{entry.twitter}">twitter</a>
+	{/if}
 </li>
 ```
 
@@ -173,9 +173,9 @@ Let's make the parent component, to see how we use child components:
 ```html
 <!-- List.html -->
 <ul>
-	{{#each animals as animal}}
-		<ListEntry entry="{{animal}}" />
-	{{/each}}
+	{#each animals as animal}
+		<ListEntry entry="{animal}" />
+	{/each}
 </ul>
 
 <script>
@@ -279,7 +279,7 @@ passing parameters to a child component is as simple as setting a
 named attribute on the HTML element:
 
 ```html
-<ChildComponent componentProperty="{{parentProperty}}" />
+<ChildComponent componentProperty="{parentProperty}" />
 
 <script>
 import ChildComponent from './ChildComponent.html'
@@ -433,7 +433,7 @@ Let's add this to our `index.html`:
 			target: document.getElementById('add')
 		})
 		addAnimal.on('submit', function(animal) {
-			var animals = list.get('animals')
+			var animals = list.get().animals
 			animals.push(animal)
 			list.set({ animals })
 		})
@@ -594,9 +594,9 @@ and that is usually an easier test to read:
 
 ```html
 <!-- Example.html -->
-{{#if someValue}}
+{#if someValue}
 <p>This displays if `calories` is greater than 5.</p>
-{{/if}}
+{/if}
 <script>
 export default {
 	computed: {

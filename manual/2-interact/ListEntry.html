@@ -1,11 +1,11 @@
 <li>
-	<h1>{{entry.emoji}} {{entry.name}}</h1>
-	{{#if entry.email}}
+	<h1>{entry.emoji} {entry.name}</h1>
+	{#if entry.email}
 		&middot;
-		<a href="mailto:{{entry.email}}">email</a>
-	{{/if}}
-	{{#if entry.twitter}}
+		<a href="mailto:{entry.email}">email</a>
+	{/if}
+	{#if entry.twitter}
 		&middot;
-		<a href="https://twitter.com/{{entry.twitter}}">twitter</a>
-	{{/if}}
+		<a href="https://twitter.com/{entry.twitter}">twitter</a>
+	{/if}
 </li>

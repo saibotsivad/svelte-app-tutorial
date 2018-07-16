@@ -1,6 +1,6 @@
 {
   "name": "svelte-tutorial",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Learn how to build a web app using Svelte.",
   "scripts": {
     "start": "http-server -p 8001 -c-1",
@@ -15,15 +15,16 @@
   },
   "author": "saibotsivad",
   "license": "VOL",
-  "dependencies": {
+  "devDependencies": {
     "browserify": "^14.3.0",
+    "chokidar": "^2.0.4",
     "debounce": "^1.0.2",
     "http-server": "^0.9.0",
     "markdown-toc": "^1.1.0",
     "npm-run-all": "^4.0.2",
     "remarkable": "^1.7.1",
-    "svelte-cli": "^1.3.5",
-    "sveltify": "^1.1.0",
+    "svelte-cli": "^3.0.0",
+    "sveltify": "^2.0.0",
     "tape": "^4.6.3",
     "tape-run": "^3.0.0"
   }
